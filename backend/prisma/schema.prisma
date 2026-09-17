@@ -1,0 +1,58 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum DocumentStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+model Document {
+  id           String         @id @default(uuid())
+  filename     String
+  storageKey   String         @unique
+  status       DocumentStatus @default(PENDING)
+  errorMessage String?
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  invoice Invoice?
+
+  @@index([status])
+}
+
+model Invoice {
+  id             String   @id @default(uuid())
+  documentId     String   @unique
+  supplierName   String
+  invoiceNumber  String
+  issueDate      DateTime @db.Date
+  totalAmount    Decimal  @db.Decimal(12, 2)
+  currency       String
+  extractionData Json
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  document Document      @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  items    InvoiceItem[]
+}
+
+model InvoiceItem {
+  id          String  @id @default(uuid())
+  invoiceId   String
+  description String
+  quantity    Decimal @db.Decimal(12, 3)
+  unitPrice   Decimal @db.Decimal(12, 2)
+  totalPrice  Decimal @db.Decimal(12, 2)
+
+  invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+
+  @@index([invoiceId])
+}
