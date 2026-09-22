@@ -1,32 +1,34 @@
-# React + TypeScript + Vite
+# DocuMind AI: frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+React + Vite dashboard for uploading invoice PDFs, following their processing, and reading the extracted invoices. The project overview, setup, and limitations are in the [root README](../README.md).
 
-Currently, two official plugins are available:
+## Commands
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+| Command | Does |
+|---|---|
+| `npm run dev` | Dev server on `http://localhost:5173` (needs the backend running) |
+| `npm run build` | Type check (`tsc -b`), then build to `dist/` |
+| `npm run lint` | oxlint |
+| `npm test` | Component and unit tests (Vitest, jsdom, Testing Library) |
 
-## React Compiler
+The API address is `VITE_API_URL` (see `.env.example`). It is read at **build time**, so set it when building for deployment.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Structure
 
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```
+src/api/         typed API client (fetch; XMLHttpRequest for upload progress)
+src/pages/       dashboard, invoice details, not found
+src/components/  upload panel, tables, status badge, state messages
+src/hooks/       useApi (fetching with loading/error/reload), page title
+src/lib/         date, money, and quantity formatting
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## Design notes
+
+- **No state library.** Data comes from a small `useApi` hook; search and page live in the URL, so going back from an invoice restores the list.
+- **Live status.** The dashboard polls every 3 seconds, but only while an upload is Pending or Processing.
+- **Accessible by default:** labelled controls, keyboard-reachable actions, visible focus, status shown with text and an icon (never colour alone), and live regions for upload progress and errors.
+- **Responsive.** On narrow screens the tables keep two columns and move secondary details under the main one.
+- **Locale-aware.** Dates and money follow the browser's locale.
+
+The visual style (a stationery-desk palette, Bitter and Public Sans fonts, the invoice page styled as a sheet of paper) is defined by the tokens in `src/index.css`.

@@ -1,0 +1,15 @@
+node_modules
+dist
+coverage
+uploads
+test
+.env
+.env.*
+!.env.example
+# Regenerated inside the image by `prisma generate`.
+src/generated
+*.tsbuildinfo
+vitest.config*.ts
+.oxlintrc.json
+.prettierrc
+README.md

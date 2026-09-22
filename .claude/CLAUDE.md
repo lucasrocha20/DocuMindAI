@@ -12,7 +12,7 @@ AI Invoice Processing SaaS MVP.
 - Prisma
 - Redis
 - BullMQ
-- Cerebras API
+- OpenAI API
 - Zod
 - Vitest or Jest
 

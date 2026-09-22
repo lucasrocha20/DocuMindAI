@@ -1,6 +1,11 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider            = "prisma-client"
+  output              = "../src/generated/prisma"
+  // Stated explicitly rather than inferred from tsconfig.json: generation also runs where
+  // there is no tsconfig yet (e.g. `npm ci` in a Docker build), and the inferred default
+  // there is ".ts", which fails at runtime once the code is compiled.
+  moduleFormat        = "esm"
+  importFileExtension = "js"
 }
 
 datasource db {
@@ -51,6 +56,8 @@ model InvoiceItem {
   quantity    Decimal @db.Decimal(12, 3)
   unitPrice   Decimal @db.Decimal(12, 2)
   totalPrice  Decimal @db.Decimal(12, 2)
+  // Order of the line on the invoice; rows have no natural order otherwise.
+  position    Int     @default(0)
 
   invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
 

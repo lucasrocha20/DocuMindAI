@@ -1,1 +1,88 @@
 @import 'tailwindcss';
+
+@theme {
+  --font-display: 'Bitter Variable', Georgia, serif;
+  --font-sans: 'Public Sans Variable', system-ui, sans-serif;
+
+  /* Stationery desk: a grey-green blotter, white sheets, pen-blue ink. */
+  --color-blotter: #dde4e0;
+  --color-sheet: #ffffff;
+  --color-ink: #16212b;
+  --color-graphite: #4f5d6b;
+  --color-rule: #bfcac5;
+  --color-pen: #26409a;
+  --color-pen-dark: #1b2f75;
+
+  /* Status is always shown with an icon and a label, never color alone. */
+  --color-pending-fg: #3f4b57;
+  --color-pending-bg: #e9edec;
+  --color-pending-edge: #c5cfcb;
+  --color-processing-fg: #7a4b00;
+  --color-processing-bg: #fff1cc;
+  --color-processing-edge: #ecd28a;
+  --color-completed-fg: #17552f;
+  --color-completed-bg: #ddf1e3;
+  --color-completed-edge: #9fd0ae;
+  --color-failed-fg: #8f1f17;
+  --color-failed-bg: #fbe4e1;
+  --color-failed-edge: #ecaaa4;
+}
+
+@layer base {
+  body {
+    @apply bg-blotter font-sans text-ink antialiased;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply font-display;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-pen);
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  /* Flat, bordered surfaces: the dashboard stays quiet. */
+  .sheet {
+    @apply rounded border border-rule bg-sheet;
+  }
+
+  .btn {
+    @apply inline-flex min-h-10 items-center justify-center gap-2 rounded-md px-4 text-sm font-semibold transition-colors;
+    @apply disabled:cursor-not-allowed disabled:opacity-60 aria-disabled:cursor-not-allowed aria-disabled:opacity-60;
+  }
+
+  .btn-primary {
+    @apply bg-pen text-white hover:bg-pen-dark disabled:hover:bg-pen aria-disabled:hover:bg-pen;
+  }
+
+  .btn-secondary {
+    @apply border border-rule bg-sheet text-ink hover:border-pen hover:text-pen;
+    @apply disabled:hover:border-rule disabled:hover:text-ink aria-disabled:hover:border-rule aria-disabled:hover:text-ink;
+  }
+
+  .field {
+    @apply min-h-10 w-full rounded-md border border-rule bg-sheet px-3 text-base text-ink placeholder:text-graphite/70;
+  }
+
+  /* The one expressive element: an invoice rendered as a sheet of paper. */
+  .invoice-sheet {
+    position: relative;
+    box-shadow:
+      0 1px 0 rgb(22 33 43 / 0.08),
+      0 16px 28px -14px rgb(22 33 43 / 0.32);
+  }
+
+  .invoice-sheet::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 9px;
+    background: radial-gradient(circle at 7px 0, var(--color-blotter) 4.5px, transparent 5px) repeat-x;
+    background-size: 14px 9px;
+  }
+}
